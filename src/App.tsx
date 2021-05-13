@@ -1,18 +1,11 @@
-import { Stack, TextField, Checkbox, DefaultButton, DatePicker, mergeStyles, IStackStyles, IStackTokens, DefaultPalette, MessageBar, MessageBarType, Link, Check } from '@fluentui/react';
+import { Stack, TextField, Checkbox, DefaultButton, DatePicker, mergeStyles, IStackStyles, IStackTokens,
+   MessageBar, MessageBarType, Image, IImageProps, ImageFit} from '@fluentui/react';
 import React, { useState } from 'react';
 import { Dropdown, DropdownMenuItemType, IDropdownStyles, IDropdownOption } from '@fluentui/react/lib/Dropdown';
+import { DefaultPalette } from '@fluentui/react/lib/Styling';
 
 const dropdownStyles: Partial<IDropdownStyles> = {
   dropdown: { width: 500 },
-};
-
-const stackStyles: IStackStyles = {
-  root: {
-  },
-};
-
-const horizontalGapStackTokens: IStackTokens = {
-  childrenGap: 200,
 };
 
 const options: IDropdownOption[] = [
@@ -32,8 +25,6 @@ const options: IDropdownOption[] = [
   { key: 'Moravskoslezský kraj', text: 'Moravskoslezský kraj' },
 ];
 
-const rootClass = mergeStyles({ maxWidth: 500, selectors: { '> *': { marginBottom: 15 } } });
-
 function App(): JSX.Element {
 
   const [jmeno, setJmeno] = useState("");
@@ -50,34 +41,75 @@ function App(): JSX.Element {
 
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+  const imageProps: IImageProps = {
+    imageFit: ImageFit.contain,
+    src: 'logo192.png',
+    // Show a border around the image (just for demonstration purposes)
+    styles: props => ({ root: { border: '1px solid ' + props.theme.palette.neutralSecondary } }),
+  };
+
   return (
-    <Stack className={rootClass}>
-      <Stack horizontal styles={stackStyles} tokens={horizontalGapStackTokens}>
-        <TextField label="Jméno" value={jmeno} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setJmeno(String(newValue))}></TextField>
-        <TextField label="Příjmení" value={prijmeni} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setPrijmeni(String(newValue))}></TextField>
+    <Stack>
+
+      <Stack horizontal>
+        <Stack.Item align="center">
+          <Image
+            {...imageProps}
+            alt='Example of the image fit value "contain" on an image wider than the frame.'
+            width={100}
+            height={100}
+          />
+        </Stack.Item>
+        <Stack.Item align="center">
+          NADPIS
+        </Stack.Item>
       </Stack>
 
-      <Stack horizontal styles={stackStyles} tokens={horizontalGapStackTokens}>
-        <TextField label="E-mail" value={email} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {setEmail(String(newValue))}}></TextField>
-        <DatePicker label="Datum narození" value={date===null?undefined:date} onSelectDate={(date: Date | null | undefined) => date && setDate(date)}/>
+      <Stack wrap>
+        <Stack.Item>
+          <TextField label="Jméno" value={jmeno} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setJmeno(String(newValue))}></TextField>
+        </Stack.Item>
+
+        <Stack.Item>
+          <TextField label="Příjmení" value={prijmeni} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setPrijmeni(String(newValue))}></TextField>
+        </Stack.Item>
       </Stack>
 
-      <Dropdown
-        label="Kraj"
-        options={options}
-        styles={dropdownStyles}
-        selectedKey={kraj===null?null:kraj.key as string}
-        onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => option && setKraj(option)}
-      />
-
-      <Checkbox label="REACT" checked={react} onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => setReact(Boolean(checked))} />
-
-      <Stack horizontal styles={stackStyles} tokens={horizontalGapStackTokens}>
-        <DefaultButton text="Uložit" onClick={() => check()} />
-        <DefaultButton text="Načíst" onClick={multi => setAll()} />
+      <Stack wrap>
+        <Stack.Item>
+          <TextField label="E-mail" value={email} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {setEmail(String(newValue))}}></TextField>
+        </Stack.Item>
+        <Stack.Item>
+          <DatePicker label="Datum narození" value={date===null?undefined:date} onSelectDate={(date: Date | null | undefined) => date && setDate(date)}/>
+        </Stack.Item>
       </Stack>
 
-      <TextField multiline rows={7} value={multi} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setMulti(String(newValue))}/>
+      <Stack.Item>
+        <Dropdown
+          label="Kraj"
+          options={options}
+          styles={dropdownStyles}
+          selectedKey={kraj===null?null:kraj.key as string}
+          onChange={(event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number) => option && setKraj(option)}
+        />
+      </Stack.Item>
+
+      <Stack.Item>
+        <Checkbox label="REACT" checked={react} onChange={(ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => setReact(Boolean(checked))} />
+      </Stack.Item>
+
+      <Stack horizontal>
+        <Stack.Item>
+          <DefaultButton text="Uložit" onClick={() => check()} />
+        </Stack.Item>
+        <Stack.Item>
+          <DefaultButton text="Načíst" onClick={multi => setAll()} />
+        </Stack.Item>
+      </Stack>
+
+      <Stack.Item>
+        <TextField multiline rows={7} value={multi} onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => setMulti(String(newValue))}/>
+      </Stack.Item>
 
       {emailerror? <MessageBar
         messageBarType={MessageBarType.error}
